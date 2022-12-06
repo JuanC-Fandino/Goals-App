@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { StyleSheet, View, FlatList, Button } from 'react-native';
+import { StyleSheet, View, FlatList, SafeAreaView } from 'react-native';
 import GoalItem from './components/GoalItem';
 import GoalInput from './components/GoalInput';
 import React from 'react';
+import CustomButton from './components/CustomButton';
+import { StatusBar } from 'expo-status-bar';
 
 // Every view organizes its children into a column by default (Flexbox)
 // JustifyContent: aligns children in the main axis
@@ -41,27 +43,37 @@ export default function App() {
   }
 
   return (
-    <View style={styles.appContainer}>
-      <Button
-        title={'Añadir nueva meta'}
-        color={'orange'}
-        onPress={startAddGoalHandler}
-      />
-      <GoalInput
-        onAddGoal={addGoalHandler}
-        visible={modalIsVisible}
-        onClose={endAddGoalHandler}
-      />
-      <View style={styles.listContainer}>
-        <FlatList
-          data={courseGoals}
-          renderItem={renderItem}
-          keyExtractor={(item) => {
-            return item.id;
+    <>
+      <StatusBar style="auto" />
+      <SafeAreaView style={styles.appContainer}>
+        <CustomButton onPress={startAddGoalHandler}>
+          Añadir nueva meta
+        </CustomButton>
+        <GoalInput
+          onAddGoal={addGoalHandler}
+          visible={modalIsVisible}
+          onClose={endAddGoalHandler}
+        />
+        <View
+          style={{
+            borderBottomColor: 'orange',
+            marginTop: 16,
+            borderBottomWidth: StyleSheet.hairlineWidth,
+            width: '90%',
+            alignSelf: 'center',
           }}
         />
-      </View>
-    </View>
+        <View style={styles.listContainer}>
+          <FlatList
+            data={courseGoals}
+            renderItem={renderItem}
+            keyExtractor={(item) => {
+              return item.id;
+            }}
+          />
+        </View>
+      </SafeAreaView>
+    </>
   );
 }
 

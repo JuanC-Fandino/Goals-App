@@ -1,6 +1,7 @@
-import { Button, Modal, StyleSheet, TextInput, View } from 'react-native';
+import { Modal, StyleSheet, TextInput, View } from 'react-native';
 import React, { useState } from 'react';
 import MainLogo from '../assets/images/MainLogo';
+import CustomButton from './CustomButton';
 
 function GoalInput(props) {
   const [enteredGoalText, setEnteredGoalText] = useState('');
@@ -30,12 +31,15 @@ function GoalInput(props) {
           value={enteredGoalText}
         />
         <View style={styles.buttonContainer}>
-          <View style={styles.button}>
-            <Button title="Agregar" onPress={addGoalHandler} />
-          </View>
-          <View style={styles.button}>
-            <Button title="Cancelar" onPress={props.onClose} />
-          </View>
+          <CustomButton
+            customStyle={styles.cancelButton}
+            onPress={props.onClose}
+          >
+            Cancelar
+          </CustomButton>
+          <CustomButton customStyle={styles.button} onPress={addGoalHandler}>
+            Añadir
+          </CustomButton>
         </View>
       </View>
     </Modal>
@@ -44,12 +48,8 @@ function GoalInput(props) {
 
 const styles = StyleSheet.create({
   inputContainer: {
-    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: 'orange',
     flex: 1,
     padding: 16,
   },
@@ -59,17 +59,23 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     width: '100%',
     padding: 8,
+    fontSize: 16,
   },
   buttonContainer: {
     flexDirection: 'row',
-    marginTop: 8,
-  },
-  button: {
-    width: 100,
-    marginHorizontal: 8,
+    marginTop: 16,
   },
   imageContainer: {
     marginBottom: 16,
+    marginLeft: 16,
+    // This to handle the offset of the image
+  },
+  button: {
+    width: '40%',
+  },
+  cancelButton: {
+    width: '40%',
+    backgroundColor: 'indianred',
   },
 });
 export default GoalInput;
