@@ -1,11 +1,8 @@
 import { useState } from 'react';
-import {
-  StyleSheet,
-  View,
-  FlatList,
-} from 'react-native';
-import GoalItem from "./components/GoalItem";
-import GoalInput from "./components/GoalInput";
+import { StyleSheet, View, FlatList, Button } from 'react-native';
+import GoalItem from './components/GoalItem';
+import GoalInput from './components/GoalInput';
+import React from 'react';
 
 // Every view organizes its children into a column by default (Flexbox)
 // JustifyContent: aligns children in the main axis
@@ -14,27 +11,52 @@ import GoalInput from "./components/GoalInput";
 // FlatList can render primitive data types but also objects, if we pass an object with a key property to the data prop it will use that key to render the list or we can pass a function to the keyExtractor prop
 
 export default function App() {
+  const [modalIsVisible, setModalIsVisible] = useState(false);
   const [courseGoals, setCourseGoals] = useState([]);
 
-  function addGoalHandler(enteredGoalText) {
+  function startAddGoalHandler() {
+    setModalIsVisible(true);
+  }
+
+  function addGoalHandler(enteredGoalText: string) {
     setCourseGoals([
       ...courseGoals,
       { text: enteredGoalText, id: Math.random().toString() },
     ]);
+    endAddGoalHandler();
+  }
+
+  function endAddGoalHandler() {
+    setModalIsVisible(false);
+  }
+
+  function removeGoalHandler(goalId) {
+    setCourseGoals((courseGoals) => {
+      return courseGoals.filter((goal) => goal.id !== goalId);
+    });
   }
 
   function renderItem(itemData) {
-    return <GoalItem text={itemData.item.text} />;
+    return <GoalItem item={itemData.item} onPressHandler={removeGoalHandler} />;
   }
 
   return (
     <View style={styles.appContainer}>
-    <GoalInput onAddGoal={addGoalHandler}/>
+      <Button
+        title={'Añadir nueva meta'}
+        color={'orange'}
+        onPress={startAddGoalHandler}
+      />
+      <GoalInput
+        onAddGoal={addGoalHandler}
+        visible={modalIsVisible}
+        onClose={endAddGoalHandler}
+      />
       <View style={styles.listContainer}>
         <FlatList
           data={courseGoals}
           renderItem={renderItem}
-          keyExtractor={(item, index) => {
+          keyExtractor={(item) => {
             return item.id;
           }}
         />
@@ -53,5 +75,4 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 5,
   },
-
 });
