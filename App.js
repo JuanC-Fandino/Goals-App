@@ -1,51 +1,43 @@
 import { useState } from 'react';
 import {
-  Button,
-  ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
   View,
+  FlatList,
 } from 'react-native';
+import GoalItem from "./components/GoalItem";
+import GoalInput from "./components/GoalInput";
 
 // Every view organizes its children into a column by default (Flexbox)
-// Child elements are organized
 // JustifyContent: aligns children in the main axis
 // The style doesn't cascade down to the children
+// Scroll view renders all of its children, even if they're not visible
+// FlatList can render primitive data types but also objects, if we pass an object with a key property to the data prop it will use that key to render the list or we can pass a function to the keyExtractor prop
 
 export default function App() {
-  const [enteredGoalText, setEnteredGoalText] = useState('');
   const [courseGoals, setCourseGoals] = useState([]);
 
-  function goalHandler() {
-    setCourseGoals([...courseGoals, enteredGoalText]);
+  function addGoalHandler(enteredGoalText) {
+    setCourseGoals([
+      ...courseGoals,
+      { text: enteredGoalText, id: Math.random().toString() },
+    ]);
   }
 
-  function changeTextHandler(enteredText) {
-    setEnteredGoalText(enteredText);
+  function renderItem(itemData) {
+    return <GoalItem text={itemData.item.text} />;
   }
 
   return (
     <View style={styles.appContainer}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="La meta que deseas alcanzar"
-          onChangeText={changeTextHandler}
-        />
-        <Button title="Agregar" onPress={goalHandler} />
-      </View>
+    <GoalInput onAddGoal={addGoalHandler}/>
       <View style={styles.listContainer}>
-        <ScrollView>
-          {courseGoals.length !== 0 &&
-            courseGoals.map((goal) => (
-              <View style={styles.goalItem}>
-                <Text style={styles.goalText} key={goal}>
-                  {goal}
-                </Text>
-              </View>
-            ))}
-        </ScrollView>
+        <FlatList
+          data={courseGoals}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => {
+            return item.id;
+          }}
+        />
       </View>
     </View>
   );
@@ -57,33 +49,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     height: '100%',
   },
-  inputContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: '#abab00',
-    flex: 1,
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: '#abab00',
-    width: '70%',
-    marginRight: 8,
-    padding: 8,
-  },
+
   listContainer: {
     flex: 5,
   },
-  goalItem: {
-    margin: 8,
-    padding: 8,
-    borderRadius: 6,
-    backgroundColor: '#abab00',
-    color: 'white',
-  },
-  goalText: {
-    color: 'white',
-  },
+
 });
